@@ -8,6 +8,8 @@ import SignupPage from './Components/SignupPage';
 import Navbar from './Components/Navbar'
 import CourseDescription from './Components/Courses/CourseDescription'
 import MyCourses from './Components/Student/MyCourses';
+import PaymentPage from './Components/BuyCourse/PaymentPage'
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -20,6 +22,7 @@ const App = () => {
           <Stack.Screen name="Navbar" component={Navbar}/>
           <Stack.Screen name="About Course" component={CourseDescription}/>
           <Stack.Screen name="mycourses" component={MyCourses}/>
+          <Stack.Screen name="payment" component={PaymentPage}/>
         </Stack.Navigator>
       </NavigationContainer>
     

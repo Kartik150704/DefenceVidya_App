@@ -48,6 +48,7 @@ const MyCourses = ({navigation,prop}) => {
         //     tempcourse[i] = t;
         // }
         setCourses(tempcourse);
+        
 
     }
     useEffect(() => {

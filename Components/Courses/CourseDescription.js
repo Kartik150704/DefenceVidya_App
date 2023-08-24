@@ -1,7 +1,27 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity,Modal } from 'react-native';
 import {useState,useEffect} from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Linking } from 'react-native';
+
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyClCN3-iXsY3sR_t_p723eXdz-fZr1WV-g",
+  authDomain: "friend-website-45257.firebaseapp.com",
+  projectId: "friend-website-45257",
+  storageBucket: "friend-website-45257.appspot.com",
+  messagingSenderId: "387813290760",
+  appId: "1:387813290760:web:638da9a8a110d99395f2bd",
+  measurementId: "G-MNSPGVSE1F"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 
 const hardcourse = {
     id: 1,
@@ -23,13 +43,54 @@ const hardcourse = {
     ],
 };
 
-const CourseDescription = ({route}) => {
+const CourseDescription = ({navigation,route}) => {
+
+    // Download Link of a particular video
+    const getVideoDownloadURLWithToken = async (videoPath) => {
+        const storage = getStorage();
+        const accessToken = 'e676d474-ffc4-4627-9109-b28acbacbeaf';
+        const videoRef = ref(storage, videoPath);
+        
+        try {
+          const downloadURL = await getDownloadURL(videoRef);
+          const downloadURLWithToken = `${downloadURL}?token=${accessToken}`;
+          console.log(downloadURLWithToken)
+          return downloadURLWithToken;
+        } catch (error) {
+          console.error('Error getting video download URL:', error);
+          return null;
+        }
+      };
+
+      //Download Pdf link
+
+      const getPdfDownloadURLWithToken = async (pdfPath) => {
+        const storage = getStorage();
+        const accessToken = 'e676d474-ffc4-4627-9109-b28acbacbeaf';
+        const pdfRef = ref(storage, pdfPath);
+      
+        try {
+          const downloadURL = await getDownloadURL(pdfRef);
+          const downloadURLWithToken = `${downloadURL}?token=${accessToken}`;
+          return downloadURLWithToken;
+        } catch (error) {
+          console.error('Error getting PDF download URL:', error);
+          return null;
+        }
+      };
+
 
     const {courseTitle}=route.params
     const [username,setusername]=useState(AsyncStorage.getItem('username'));
     const [useremail,setuseremail]=useState(AsyncStorage.getItem('useremail'))
     let userdata={course:courseTitle}
     const [course,setcourse]=useState(hardcourse)
+    const [isModalVisible, setModalVisible] = useState(false);
+    // Buy Course Window
+    const closeModal = () => {
+        setModalVisible(false);
+        
+    };
     
     const getCourses = async () => {
 
@@ -99,9 +160,61 @@ const CourseDescription = ({route}) => {
 
     // Checking whether Buyer has that course or not
 
-    const PlayVideo=async ()=>
+    const PlayVideo=async (index)=>
     {
+        let response=await fetch("http://localhost:8080/dv/check/coursebuy",{
+            method:"POST",
+            headers:
+            {
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({user:useremail,course:courseTitle})
+        })
+
+        response=await response.json();
+        if(response)
+        {
+            let videoPath=`Lectures/${courseTitle}/Lecture${index}.mp4`;
+            let link=await getVideoDownloadURLWithToken(videoPath);
+            console.log(link);
+            Linking.openURL(link)
+        }
+        else
+        {
+            setModalVisible(true)
+        }
         
+    }
+
+    const OpenPdf=async (index)=>
+    {
+        let response=await fetch("http://localhost:8080/dv/check/coursebuy",{
+            method:"POST",
+            headers:
+            {
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({user:useremail,course:courseTitle})
+        })
+
+        response=await response.json();
+        if(response)
+        {
+            let videoPath=`StudyMaterial/${courseTitle}/Lecture${index}.pdf`;
+            let link=await getPdfDownloadURLWithToken(videoPath);
+            console.log(link);
+            Linking.openURL(link)
+        }
+        else
+        {
+            setModalVisible(true)
+        }
+    }
+
+    const goToBuyCourse=()=>
+    {
+        setModalVisible(false)
+        navigation.navigate("payment",{coursetitle:courseTitle})
     }
     return (
         <View style={styles.container}>
@@ -116,7 +229,7 @@ const CourseDescription = ({route}) => {
                         <View key={lecture.id} style={styles.itemContainer}>
                             <Text style={styles.itemTitle}>{lecture.title}</Text>
                             <TouchableOpacity style={styles.playButton}>
-                                <Text style={styles.playButtonText}>Play</Text>
+                                <Text onPress={()=>PlayVideo(lecture.id)} style={styles.playButtonText}>Play</Text>
                             </TouchableOpacity>
                         </View>
                     ))}
@@ -127,11 +240,28 @@ const CourseDescription = ({route}) => {
                         <View key={material.id} style={styles.itemContainer}>
                             <Text style={styles.itemTitle}>{material.title}</Text>
                             <TouchableOpacity style={styles.downloadButton}>
-                                <Text style={styles.downloadButtonText}>Download</Text>
+                                <Text onPress={()=>OpenPdf(material.id)} style={styles.downloadButtonText}>Download</Text>
                             </TouchableOpacity>
                         </View>
                     ))}
                 </View>
+                <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isModalVisible}
+        >
+            <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                    <Text style={styles.modalText}>You have not bought this course yet.</Text>
+                    <TouchableOpacity style={styles.modalButton} onPress={closeModal}>
+                        <Text style={styles.modalButtonText}>Close</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.modalButton} onPress={closeModal}>
+                        <Text style={styles.modalButtonText} onPress={goToBuyCourse}>Buy Course</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
             </ScrollView>
         </View>
     );
@@ -223,6 +353,40 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderColor: '#ccc',
         marginTop: 20,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)', // Almost invisible background
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        marginTop:20,
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        height: '50%', // Set the height to 50% of the screen
+        marginTop: '25%', // 25% margin from the top
+        marginBottom: '25%', // 25% margin from the bottom
+    },
+    modalText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalButton: {
+        backgroundColor: '#3498db',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop:30,
+    },
+    modalButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 
