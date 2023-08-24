@@ -20,30 +20,35 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // ... (Previous imports and code)
 
-const CourseList = ({navigation}) => {
+const MyCourses = ({navigation,prop}) => {
     const [courses, setCourses] = useState([]);
 
-    const fetchCourses=async ()=>
-    {
-        let response =await fetch("http://localhost:8080/allcourses")
-        response =await response.json();
-        console.log(response.length);
-        let tempcourse=response
-        
-        
-            for(let i=0;i<tempcourse.length;i++)
-            {
-                let t={
-                    id:i+1,
-                    title:tempcourse[i].heading,
-                    description:tempcourse[i].about,
-                    // image:tempcourse[i].enrollLink
-                    image:"https://picsum.photos/id/237/536/354"
-                }
-                tempcourse[i]=t;
-            }
-            setCourses(tempcourse);
-        
+    const fetchCourses = async () => {
+        let response = await fetch("http://localhost:8080/dv/mycourses", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+
+            },
+            body: JSON.stringify({email:prop})
+        })
+        response = await response.json();
+        console.log(response);
+        let tempcourse = response
+
+
+        // for (let i = 0; i < tempcourse.length; i++) {
+        //     let t = {
+        //         id: i + 1,
+        //         title: tempcourse[i].heading,
+        //         description: tempcourse[i].about,
+        //         // image:tempcourse[i].enrollLink
+        //         image: "https://picsum.photos/id/237/536/354"
+        //     }
+        //     tempcourse[i] = t;
+        // }
+        setCourses(tempcourse);
+
     }
     useEffect(() => {
         // Your data fetching logic or dummy data here
@@ -52,13 +57,13 @@ const CourseList = ({navigation}) => {
             { id: 2, title: 'Course 2', description: 'Description for Course 2', image: 'https://picsum.photos/id/237/536/354' },
             { id: 3, title: 'Course 3', description: 'Description for Course 3', image: 'https://picsum.photos/id/237/536/354' },
             { id: 4, title: 'Course 4', description: 'Description for Course 4', image: 'https://picsum.photos/id/237/536/354' },
-            
+
         ];
 
         setCourses(dummyCourses);
         fetchCourses();
 
-        
+
     }, []);
 
     const goTOCourse=(title)=>
@@ -67,12 +72,12 @@ const CourseList = ({navigation}) => {
         navigation.navigate("About Course",{courseTitle:title})
     }
 
-    return (
-        
 
+    return (
         <View style={styles.container}>
-        <Text style={styles.heading}>All Courses</Text>
-        <GestureHandlerRootView>
+            <Text style={styles.heading}>My Courses</Text>
+            <GestureHandlerRootView>
+
             <ScrollView style={styles.scrollContainer}>
                 {courses.map(course => (
                     <TouchableOpacity onPress={()=>goTOCourse(course.title)} key={course.id} style={styles.courseBox}>
@@ -84,9 +89,8 @@ const CourseList = ({navigation}) => {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-        </GestureHandlerRootView>
+            </GestureHandlerRootView>
         </View>
-        
     );
 };
 
@@ -94,16 +98,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
+        marginTop:10
     },
     heading: {
         textAlign: 'center',
         fontWeight: 'bold', // Adding this to make the text bold
         fontSize: 20, // Adjust the font size as needed
-        margin:10,
-      },
+        margin: 10,
+    },
     scrollContainer: {
         maxHeight: 400, // Specify the maximum height for scrollable content
-        margin:10
+        margin: 10
     },
     courseBox: {
         flexDirection: 'row',
@@ -131,4 +136,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CourseList;
+export default MyCourses;

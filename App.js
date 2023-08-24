@@ -1,21 +1,29 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Navbar from './Components/Navbar';
-import CarouselCards from './Components/Coursel/CarouselCards.js';
-import CourseList from './Components/Courses/CourseList';
-import VideoPlayer from './Components/VideoPlayer/VideoPlayer';
-import PdfViwer from './Components/StudyMaterial/PdfViewer';
-const App = () => {
-  
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import LoginPage from './Components/LoginPage';
+import SignupPage from './Components/SignupPage';
+import Navbar from './Components/Navbar'
+import CourseDescription from './Components/Courses/CourseDescription'
+import MyCourses from './Components/Student/MyCourses';
+const Stack = createStackNavigator();
+
+const App = () => {
   return (
-    <View style={{flex:1}}>
-      <Navbar/>
-      <CourseList/>
-      <PdfViwer/>
-    </View>
+    
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Navbar">
+          <Stack.Screen name="LoginPage" component={LoginPage} />
+          <Stack.Screen name="SignupPage" component={SignupPage} />
+          <Stack.Screen name="Navbar" component={Navbar}/>
+          <Stack.Screen name="About Course" component={CourseDescription}/>
+          <Stack.Screen name="mycourses" component={MyCourses}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    
   );
 };
- 
 
 export default App;
