@@ -20,7 +20,7 @@ const PaymentPage = ({navigation,route}) => {
             }
             console.log(coursedata)
             // Replace this with your actual API call to get the payment link from the backend
-            const response = await fetch('http://localhost:8080/dv/payment', {
+            const response = await fetch('https://betawill-com.onrender.com/dv/payment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

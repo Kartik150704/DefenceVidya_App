@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "app1",
-    "slug": "app1",
+    "slug": "defence-vidya-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kartikyadav1507.defencevidyaapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fed51dfa-ea26-44f3-b31e-d2004273307e"
+      }
+    },
+    "owner": "kartikyadav1507"
   }
 }

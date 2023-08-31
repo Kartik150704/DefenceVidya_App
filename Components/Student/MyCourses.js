@@ -24,7 +24,7 @@ const MyCourses = ({navigation,prop}) => {
     const [courses, setCourses] = useState([]);
 
     const fetchCourses = async () => {
-        let response = await fetch("http://localhost:8080/dv/mycourses", {
+        let response = await fetch("https://betawill-com.onrender.com/dv/mycourses", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

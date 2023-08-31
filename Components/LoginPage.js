@@ -19,7 +19,7 @@ const LoginPage = ({navigation,setmail,setname}) => {
       navigation.navigate("Navbar")
       return
     }
-    let response = await fetch('http://localhost:8080/students/login', {
+    let response = await fetch('https://betawill-com.onrender.com/students/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

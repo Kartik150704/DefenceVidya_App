@@ -38,7 +38,7 @@ const SignupPage = ({navigation}) => {
     }
     setTrueOTP(totp)
 
-    let response=await fetch("http://localhost:8080/dv/verifyotp",
+    let response=await fetch("https://betawill-com.onrender.com/dv/verifyotp",
     {
         method:'POST',
         headers:
@@ -70,7 +70,7 @@ const SignupPage = ({navigation}) => {
     }
     if(trueOTP==otp)
     {
-        let response=await fetch('http://localhost:8080/dv/students/signup',
+        let response=await fetch('https://betawill-com.onrender.com/dv/students/signup',
         {
             method:'POST',
             headers:

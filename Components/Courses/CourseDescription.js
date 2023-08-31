@@ -106,7 +106,7 @@ const CourseDescription = ({navigation,route}) => {
         console.log(useremail);
         console.log(username)
 
-        let response = await fetch("http://localhost:8080/dv/allaboutcourse",
+        let response = await fetch("https://betawill-com.onrender.com/dv/allaboutcourse",
             {
                 
                 method: 'POST',
@@ -162,7 +162,7 @@ const CourseDescription = ({navigation,route}) => {
 
     const PlayVideo=async (index)=>
     {
-        let response=await fetch("http://localhost:8080/dv/check/coursebuy",{
+        let response=await fetch("https://betawill-com.onrender.com/dv/check/coursebuy",{
             method:"POST",
             headers:
             {
@@ -188,7 +188,7 @@ const CourseDescription = ({navigation,route}) => {
 
     const OpenPdf=async (index)=>
     {
-        let response=await fetch("http://localhost:8080/dv/check/coursebuy",{
+        let response=await fetch("https://betawill-com.onrender.com/dv/check/coursebuy",{
             method:"POST",
             headers:
             {

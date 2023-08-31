@@ -25,7 +25,7 @@ const CourseList = ({navigation}) => {
 
     const fetchCourses=async ()=>
     {
-        let response =await fetch("http://localhost:8080/allcourses")
+        let response =await fetch("https://betawill-com.onrender.com/allcourses")
         response =await response.json();
         console.log(response.length);
         let tempcourse=response
